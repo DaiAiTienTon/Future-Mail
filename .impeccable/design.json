@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-17T07:50:00Z",
+  "title": "Design System: Future Mail",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Stone Black", "canonical": "#1c1917" },
+      "neutral-bg": { "role": "neutral", "displayName": "Stone 50", "canonical": "#fafaf9" },
+      "neutral-surface": { "role": "neutral", "displayName": "Pure White", "canonical": "#ffffff" },
+      "neutral-border": { "role": "neutral", "displayName": "Stone 100", "canonical": "#f5f5f4" },
+      "neutral-text": { "role": "neutral", "displayName": "Stone 800", "canonical": "#292524" },
+      "neutral-muted": { "role": "neutral", "displayName": "Stone 500", "canonical": "#78716c" },
+      "status-success": { "role": "secondary", "displayName": "Emerald", "canonical": "#10b981" },
+      "status-warning": { "role": "tertiary", "displayName": "Amber", "canonical": "#f59e0b" },
+      "status-error": { "role": "tertiary", "displayName": "Rose", "canonical": "#f43f5e" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Serif", "purpose": "Major numbers and hero states." },
+      "body": { "displayName": "Body Sans", "purpose": "Legible text for everything else." }
+    },
+    "shadows": [
+      { "name": "shadow-sm", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Default separation for cards." },
+      { "name": "shadow-md", "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "purpose": "Hover lift for cards." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Used for main actions.",
+      "html": "<button class=\"ds-btn-primary\">Write a Letter</button>",
+      "css": ".ds-btn-primary { background: #292524; color: #f9fafb; padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: 500; font-family: ui-sans-serif, system-ui, sans-serif; transition: background-color 0.2s; border: none; cursor: pointer; } .ds-btn-primary:hover { background-color: #1c1917; }"
+    },
+    {
+      "name": "Card Container",
+      "kind": "card",
+      "refersTo": "card-container",
+      "description": "Standard container for content.",
+      "html": "<div class=\"ds-card\"><h3>Scheduled</h3><p>42</p></div>",
+      "css": ".ds-card { background: #ffffff; padding: 1.5rem; border-radius: 1.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); border: 1px solid #f5f5f4; transition: box-shadow 0.3s, border-color 0.3s; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-card:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border-color: #e7e5e4; } .ds-card h3 { font-size: 0.875rem; color: #78716c; font-weight: 500; margin-bottom: 0.5rem; } .ds-card p { font-size: 2.25rem; font-family: ui-serif, Georgia, serif; color: #292524; margin: 0; }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "chip-status",
+      "description": "Displays the current status of an email.",
+      "html": "<div class=\"ds-status-pill\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/></svg>Scheduled</div>",
+      "css": ".ds-status-pill { display: inline-flex; align-items: center; gap: 0.5rem; background: #fafaf9; padding: 0.375rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; color: #57534e; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-status-pill svg { color: #f59e0b; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Minimalist Time Capsule",
+    "overview": "Future Mail employs a stark, highly contrasted, and typography-driven aesthetic. By stripping away extraneous decorations, the interface focuses entirely on the gravity of time and the personal nature of the letters being written. It relies heavily on a monochromatic \"stone\" palette to convey permanence, with vibrant semantic colors used only sparingly for status indicators.",
+    "keyCharacteristics": [
+      "Monochromatic foundation (Stone palette) with high contrast.",
+      "Serif typography for primary headings to evoke classic letter-writing.",
+      "Sans-serif for UI elements and readability.",
+      "Generous border radii (`3xl` and `full`) to soften the stark contrast."
+    ],
+    "rules": [
+      {
+        "name": "The Monochromatic Dominance Rule",
+        "body": "The UI must remain entirely grayscale (Stone palette) except for strictly semantic status icons (emerald, amber, rose). Do not use colored backgrounds or text for decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat at rest. Shadows appear only to separate white cards from the off-white canvas or as a response to hover states.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use `font-serif` for prominent headings and numbers to maintain the \"classic letter\" feel.",
+      "Do use `rounded-3xl` for main content containers and `rounded-full` for actions."
+    ],
+    "donts": [
+      "Don't introduce new brand colors into the UI. Keep it strictly Stone grayscale.",
+      "Don't use heavy drop shadows. Rely on subtle borders and `shadow-sm`."
+    ]
+  }
+}

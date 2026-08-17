@@ -91,6 +91,38 @@ cp backend/.env.example backend/.env
 
 ---
 
+### 📧 Hướng Dẫn Chi Tiết Cấu Hình Gmail SMTP (Lấy Mật Khẩu Ứng Dụng / App Password)
+
+Khi sử dụng Gmail làm server SMTP gửi thư, bạn **KHÔNG THỂ** sử dụng mật khẩu đăng nhập Gmail thông thường (Google sẽ chặn kết nối vì lý do bảo mật). Thay vào đó, bạn cần tạo **Mật Khẩu Ứng Dụng (App Password)** 16 ký tự theo các bước sau:
+
+#### Bước 1: Bật Xác minh 2 bước (2-Step Verification)
+1. Truy cập vào quản lý tài khoản Google tại: [myaccount.google.com](https://myaccount.google.com/)
+2. Chọn mục **Bảo mật** (Security) ở menu bên trái.
+3. Tại phần **Cách bạn đăng nhập vào Google**, chọn **Xác minh 2 bước** (2-Step Verification) và tiến hành bật nếu chưa bật.
+
+#### Bước 2: Tạo Mật khẩu ứng dụng (App Password)
+1. Truy cập trực tiếp trang tạo Mật khẩu ứng dụng: [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+2. Điền tên gợi nhớ cho ứng dụng vào ô **Tên ứng dụng** (ví dụ: `Future Mail`).
+3. Bấm **Tạo** (Create).
+4. Google sẽ hiển thị một cửa sổ có mã 16 ký tự màu vàng (ví dụ: `xxxx xxxx xxxx xxxx`). Bạn hãy sao chép chuỗi mã này.
+
+#### Bước 3: Cấu hình vào file `backend/.env`
+Điền các giá trị thu được vào file `backend/.env` của bạn:
+
+```env
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="465"
+SMTP_USER="tài_khoản_gmail_của_bạn@gmail.com"
+SMTP_PASS="xxxx xxxx xxxx xxxx"
+EMAIL_FROM_NAME="Future Mail"
+```
+
+> **Lưu ý:** 
+> - `SMTP_PORT="465"` sử dụng mã hóa SSL (khuyên dùng). Bạn cũng có thể dùng `587` cho kết nối TLS.
+> - Mã `SMTP_PASS` có thể giữ nguyên khoảng trắng hoặc bỏ khoảng trắng, hệ thống backend sẽ tự động chuẩn hóa khi kết nối.
+
+---
+
 ## 🚀 Hướng Dẫn Cài Đặt & Chạy Dự Án (Execution Guide)
 
 ### 1. Cài Đặt Dependencies

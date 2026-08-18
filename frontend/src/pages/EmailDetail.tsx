@@ -13,6 +13,8 @@ export default function EmailDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   // Check if we just created this email
   const showSuccessMessage = location.state?.success;
@@ -29,14 +31,15 @@ export default function EmailDetail() {
   }, [id]);
 
   const handleCancel = async () => {
-    if (!id || !window.confirm('Bạn có chắc chắn muốn hủy việc gửi thư này không?')) return;
-    
+    if (!id) return;
     setCancelling(true);
+    setCancelError(null);
     try {
       const updated = await cancelEmail(id);
       setEmail(updated);
+      setShowCancelConfirm(false);
     } catch (err: any) {
-      alert(err.message || 'Hủy gửi thư thất bại');
+      setCancelError(err.message || 'Hủy gửi thư thất bại');
     } finally {
       setCancelling(false);
     }
@@ -44,9 +47,9 @@ export default function EmailDetail() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-8 h-8 rounded-full border-2 border-stone-300 border-t-stone-800 animate-spin" />
+      <div className="flex justify-center items-center h-64" role="status" aria-label="Đang tải">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 rounded-full border-2 border-stone-300 border-t-stone-800 animate-spin" aria-hidden="true" />
         </div>
       </div>
     );
@@ -55,8 +58,8 @@ export default function EmailDetail() {
   if (error || !email) {
     return (
       <div className="max-w-2xl mx-auto text-center py-20">
-        <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-        <h2 className="text-2xl font-serif text-stone-800 mb-2">Không tìm thấy thư</h2>
+        <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" aria-hidden="true" />
+        <h2 className="text-2xl font-sans font-semibold text-stone-800 mb-2">Không tìm thấy thư</h2>
         <p className="text-stone-500 mb-8">{error || "Chúng tôi không thể tìm thấy bức thư bạn đang tìm kiếm."}</p>
         <button onClick={() => navigate('/')} className="px-6 py-2 bg-stone-100 hover:bg-stone-200 active:scale-[0.98] text-stone-700 rounded-full font-medium transition-all">
           Quay về màn hình chính
@@ -100,7 +103,7 @@ export default function EmailDetail() {
       <div className="bg-white border border-stone-200 rounded-3xl p-8 md:p-12 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
           <div>
-            <h1 className="text-2xl font-serif text-stone-900 mb-2">{email.subject}</h1>
+            <h1 className="text-2xl font-serif text-stone-900 mb-2 break-words">{email.subject}</h1>
             <p className="text-stone-500 text-sm flex items-center gap-2">
               Tới: <span className="text-stone-800 font-medium">{email.recipient}</span>
             </p>
@@ -144,25 +147,50 @@ export default function EmailDetail() {
             </div>
           )}
           {email.errorMessage && (
-            <div className="flex justify-between items-center text-red-600">
-              <span>Chi tiết lỗi</span>
-              <span className="font-medium text-right max-w-xs truncate" title={email.errorMessage}>
-                {email.errorMessage}
-              </span>
+            <div className="flex flex-col gap-1 pt-2" role="alert">
+              <span className="text-red-600 font-medium text-sm">Chi tiết lỗi</span>
+              <span className="text-red-700 text-sm break-words">{email.errorMessage}</span>
             </div>
           )}
         </div>
 
         {email.status === 'SCHEDULED' && (
-          <div className="mt-8 pt-8 border-t border-stone-100 flex justify-end">
-            <button
-              onClick={handleCancel}
-              disabled={cancelling}
-              className="flex items-center gap-2 px-6 py-2.5 bg-white border border-stone-200 hover:border-red-200 hover:bg-red-50 text-stone-700 hover:text-red-700 active:scale-[0.98] rounded-full font-medium transition-all text-sm disabled:opacity-50"
-            >
-              {cancelling ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
-              Hủy gửi thư
-            </button>
+          <div className="mt-8 pt-8 border-t border-stone-100">
+            {cancelError && (
+              <div role="alert" className="mb-4 text-sm text-red-700 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                {cancelError}
+              </div>
+            )}
+            {showCancelConfirm ? (
+              <div className="flex items-center justify-end gap-3">
+                <p className="text-sm text-stone-600">Xác nhận hủy gửi thư này?</p>
+                <button
+                  onClick={() => setShowCancelConfirm(false)}
+                  disabled={cancelling}
+                  className="px-4 py-2 text-sm bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-full font-medium transition-all disabled:opacity-50"
+                >
+                  Không
+                </button>
+                <button
+                  onClick={handleCancel}
+                  disabled={cancelling}
+                  className="flex items-center gap-2 px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition-all disabled:opacity-50"
+                >
+                  {cancelling ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : null}
+                  Xác nhận hủy
+                </button>
+              </div>
+            ) : (
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowCancelConfirm(true)}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-white border border-stone-200 hover:border-stone-300 hover:bg-stone-50 text-stone-700 active:scale-[0.98] rounded-full font-medium transition-all text-sm"
+                >
+                  <Ban className="w-4 h-4" aria-hidden="true" />
+                  Hủy gửi thư
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

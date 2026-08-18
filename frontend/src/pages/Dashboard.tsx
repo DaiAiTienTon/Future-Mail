@@ -10,7 +10,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadEmails = () => {
+    setLoading(true);
+    setError(null);
     fetchEmails()
       .then((data) => {
         setEmails(data);
@@ -18,13 +20,17 @@ export default function Dashboard() {
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadEmails();
   }, []);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-8 h-8 rounded-full border-2 border-stone-300 border-t-stone-800 animate-spin" />
+      <div className="flex justify-center items-center h-64" role="status" aria-label="Đang tải">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 rounded-full border-2 border-stone-300 border-t-stone-800 animate-spin" aria-hidden="true" />
           <p className="text-stone-500 font-medium text-sm">Đang tải dòng thời gian...</p>
         </div>
       </div>
@@ -33,12 +39,12 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="bg-red-50 text-red-800 p-6 rounded-2xl flex flex-col items-center text-center gap-2">
-        <AlertCircle className="w-8 h-8 text-red-500 mb-2" />
+      <div className="bg-red-50 text-red-900 p-6 rounded-2xl flex flex-col items-center text-center gap-2">
+        <AlertCircle className="w-8 h-8 text-red-500 mb-2" aria-hidden="true" />
         <h3 className="font-medium text-lg">Không thể tải dòng thời gian</h3>
-        <p className="text-red-600/80 max-w-sm">{error}</p>
+        <p className="text-red-700 max-w-sm text-sm">{error}</p>
         <button 
-          onClick={() => window.location.reload()}
+          onClick={loadEmails}
           className="mt-4 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-900 rounded-full transition-colors text-sm font-medium"
         >
           Thử lại
@@ -74,7 +80,7 @@ export default function Dashboard() {
     if (items.length === 0) {
       return (
         <div className="mt-8">
-          <h2 className="text-lg font-serif font-medium text-stone-800 mb-4">{title}</h2>
+          <h2 className="text-xl font-serif font-medium text-stone-800 mb-4">{title}</h2>
           <div className="border border-dashed border-stone-200 rounded-2xl p-12 text-center">
             <p className="text-stone-500">{emptyMessage}</p>
           </div>
@@ -84,7 +90,7 @@ export default function Dashboard() {
 
     return (
       <div className="mt-12">
-        <h2 className="text-lg font-serif font-medium text-stone-800 mb-6">{title}</h2>
+        <h2 className="text-xl font-serif font-medium text-stone-800 mb-4">{title}</h2>
         <ul className="grid gap-4">
           {items.map((email, i) => (
             <motion.li 
@@ -98,12 +104,12 @@ export default function Dashboard() {
                 to={`/emails/${email.id}`}
               className="group bg-white border border-stone-100 hover:border-stone-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-start sm:items-center justify-between flex-col sm:flex-row gap-4"
             >
-              <div className="flex flex-col gap-1 w-full sm:w-auto">
-                <h3 className="font-medium text-stone-900 group-hover:text-stone-700 transition-colors truncate max-w-sm">
+              <div className="flex flex-col gap-1 w-full sm:w-auto min-w-0">
+                <h3 className="font-medium text-stone-900 group-hover:text-stone-700 transition-colors truncate max-w-md">
                   {email.subject}
                 </h3>
                 <p className="text-sm text-stone-500 flex items-center gap-2">
-                  <span className="truncate max-w-[200px]">{email.recipient}</span>
+                  <span className="truncate max-w-[240px]">{email.recipient}</span>
                 </p>
               </div>
               
@@ -139,11 +145,11 @@ export default function Dashboard() {
       >
         <div className="bg-white p-6 md:p-10 rounded-[2rem] shadow-sm border border-stone-200 flex flex-col justify-between aspect-[4/3] md:aspect-auto md:h-72">
           <span className="text-stone-500 text-sm font-medium">Đã lên lịch</span>
-          <span className="text-7xl md:text-9xl font-serif text-stone-900 tracking-tighter mt-4">{stats.scheduled}</span>
+          <span className="text-7xl md:text-9xl font-serif text-stone-900 tracking-display mt-4">{stats.scheduled}</span>
         </div>
         <div className="bg-stone-900 p-6 md:p-10 rounded-[2rem] shadow-lg shadow-stone-900/20 border border-stone-800 flex flex-col justify-between aspect-[4/3] md:aspect-auto md:h-72">
           <span className="text-stone-400 text-sm font-medium">Lưu trữ</span>
-          <span className="text-7xl md:text-9xl font-serif text-stone-50 tracking-tighter mt-4">{stats.sent}</span>
+          <span className="text-7xl md:text-9xl font-serif text-stone-50 tracking-display mt-4">{stats.sent}</span>
         </div>
       </motion.div>
 

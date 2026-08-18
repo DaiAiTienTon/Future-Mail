@@ -1,1 +1,30 @@
 @import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400..700;1,400..700&family=Inter:ital,wght@0,300..800;1,300..800&display=swap');
+
+@theme {
+  --font-serif: "Noto Serif", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Vietnamese diacritical rendering fix */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+/* Ensure precomposed Vietnamese characters render without gaps */
+:lang(vi) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+

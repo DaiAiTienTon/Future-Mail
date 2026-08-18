@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Clock } from 'lucide-react';
 import { cn } from '../lib/utils';
+import AIChatWidget from './AIChatWidget';
 
 export default function Layout() {
   const location = useLocation();
@@ -29,6 +30,8 @@ export default function Layout() {
       <main className="max-w-3xl mx-auto px-6 pb-24">
         <Outlet />
       </main>
+      <AIChatWidget />
     </div>
   );
 }
+

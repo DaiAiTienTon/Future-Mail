@@ -20,6 +20,9 @@
   - Đảm bảo hoạt động ổn định kể cả khi backend bị khởi động lại.
 - **Dịch Vụ Gửi Email Linh Hoạt:**
   - Hỗ trợ gửi qua **Resend API** hoặc **Gmail SMTP (Nodemailer)**.
+- **Trợ Lý AI Hỗ Trợ Viết Thư (AI Chat Assistant):**
+  - Khung chat AI thông minh hỗ trợ tìm ý tưởng, gợi ý câu hỏi tự ngẫm và trau chuốt văn phong gửi bản thân/người thân trong tương lai.
+  - Kết nối trực tiếp qua Cloudflare AI Worker API (`AI_WORKER_URL`).
 
 ---
 
@@ -36,6 +39,7 @@
 - **Task Scheduler:** `node-cron`
 - **Validation:** Zod
 - **Email Service:** Resend API & Nodemailer (SMTP)
+- **AI Assistant:** Cloudflare Workers AI / REST API
 
 ---
 
@@ -47,7 +51,7 @@ Future-Mail/
 │   ├── prisma/             # Schema Prisma & migrations (SQLite)
 │   ├── src/
 │   │   ├── services/       # Dịch vụ gửi email (Resend & SMTP)
-│   │   ├── index.ts        # Express REST API server
+│   │   ├── index.ts        # Express REST API server & AI endpoint
 │   │   ├── prisma.ts       # Prisma Client instance
 │   │   └── scheduler.ts    # Cron worker chạy định kỳ mỗi 30s
 │   ├── .env.example        # Mẫu tham số cấu hình môi trường backend
@@ -55,7 +59,7 @@ Future-Mail/
 │
 ├── frontend/               # Frontend React Single Page App
 │   ├── src/
-│   │   ├── components/     # UI Components (Layout, Navbar, MailCard, etc.)
+│   │   ├── components/     # UI Components (Layout, AIChatWidget, MailCard, etc.)
 │   │   ├── pages/          # Các trang (Dashboard, CreateEmail, EmailDetail)
 │   │   ├── lib/            # API client & helpers
 │   │   └── App.tsx
@@ -88,6 +92,7 @@ cp backend/.env.example backend/.env
 | `EMAIL_FROM_NAME` | Tên hiển thị người gửi | `"Future Mail"` |
 | `RESEND_API_KEY` | API Key của dịch vụ Resend | `"re_123456789"` |
 | `EMAIL_FROM` | Địa chỉ email gửi đi trong Resend | `"onboarding@resend.dev"` |
+| `AI_WORKER_URL` | Đường dẫn API Cloudflare AI Worker hỗ trợ viết thư | `"https://rough-boat-ebb6.tuvkdt2003.workers.dev/"` |
 
 ---
 
@@ -174,6 +179,8 @@ Truy cập ứng dụng tại trình duyệt: `http://localhost:5173`
 | `GET` | `/api/emails/:id` | Lấy thông tin chi tiết của một thư theo ID |
 | `POST` | `/api/emails` | Tạo và lên lịch gửi thư tương lai mới |
 | `POST` | `/api/emails/:id/cancel` | Hủy lịch gửi thư (Chỉ áp dụng khi thư ở trạng thái `SCHEDULED`) |
+| `POST` | `/api/ai/chat` | Trò chuyện với Trợ lý AI hỗ trợ gợi ý và chỉnh sửa nội dung thư |
+
 
 ---
 

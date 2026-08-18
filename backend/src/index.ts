@@ -148,6 +148,90 @@ app.post('/api/emails/:id/cancel', async (req, res) => {
   }
 });
 
+// 5. POST /api/ai/chat - AI Assistant for writing letters
+const aiChatSchema = z.object({
+  messages: z.array(z.object({
+    role: z.enum(['system', 'user', 'assistant']),
+    content: z.string().min(1, 'Content is required')
+  })).min(1, 'Messages cannot be empty')
+});
+
+app.post('/api/ai/chat', async (req, res) => {
+  try {
+    const parseResult = aiChatSchema.safeParse(req.body);
+    if (!parseResult.success) {
+      return res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Invalid request body',
+          details: parseResult.error.flatten().fieldErrors
+        }
+      });
+    }
+
+    const { messages } = parseResult.data;
+
+    // LLaMA 3.1 Instruct requires conversation to start with 'user' role after system prompt.
+    // Filter out initial welcome assistant messages prior to the first user message.
+    const firstUserIndex = messages.findIndex(m => m.role === 'user');
+    const sanitizedMessages = firstUserIndex !== -1 ? messages.slice(firstUserIndex) : messages;
+
+    const aiWorkerUrl = process.env.AI_WORKER_URL || 'https://rough-boat-ebb6.tuvkdt2003.workers.dev/';
+
+    // Call Cloudflare worker API
+    const response = await fetch(aiWorkerUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: sanitizedMessages
+      })
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      console.error('Worker returned HTTP error:', response.status, responseText);
+      throw new Error(`AI Worker API error: ${response.statusText}`);
+    }
+
+    let replyText = responseText;
+
+    try {
+      const json = JSON.parse(responseText);
+      
+      if (json.success === false) {
+        throw new Error(json.error || 'AI Worker returned unsuccessful status');
+      }
+
+      if (typeof json.response === 'string') {
+        replyText = json.response;
+      } else if (json.response && typeof json.response.response === 'string') {
+        replyText = json.response.response;
+      } else if (json.response && typeof json.response.text === 'string') {
+        replyText = json.response.text;
+      } else {
+        replyText = json.response || json.reply || json.content || json.text || json.message || responseText;
+      }
+    } catch (e: any) {
+      if (e.message && e.message.includes('AI Worker')) {
+        throw e;
+      }
+      // If parsing failed, fallback to plain text
+    }
+
+    res.json({ reply: String(replyText).trim() });
+  } catch (error: any) {
+    console.error('Error in AI Chat endpoint:', error);
+    res.status(500).json({
+      error: {
+        code: 'AI_SERVICE_ERROR',
+        message: error.message || 'Khôn thể kết nối với dịch vụ AI công khai.'
+      }
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Backend server running on http://localhost:${port}`);
 });
+

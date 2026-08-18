@@ -90,7 +90,11 @@ export default function CreateEmail() {
         <p className="text-stone-500 mb-8">Gửi thông điệp cho chính bạn ở tương lai.</p>
 
         {submitError && (
-          <div className="bg-red-50 text-red-800 p-4 rounded-xl mb-6 text-sm">
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="bg-red-50 text-red-900 p-4 rounded-xl mb-6 text-sm border border-red-100"
+          >
             {submitError}
           </div>
         )}
@@ -111,8 +115,9 @@ export default function CreateEmail() {
               {...register('recipient')}
               type="email"
               placeholder="ban@example.com"
+              autoComplete="email"
               className={cn(
-                "w-full px-4 py-3 bg-white border rounded-xl outline-none transition-colors",
+                "w-full px-4 py-3 text-base bg-white border rounded-xl outline-none transition-colors",
                 errors.recipient ? "border-red-300 focus:border-red-500" : "border-stone-200 focus:border-stone-400"
               )}
             />
@@ -126,7 +131,7 @@ export default function CreateEmail() {
               type="text"
               placeholder="Vài dòng gửi tôi của tương lai..."
               className={cn(
-                "w-full px-4 py-3 bg-white border rounded-xl outline-none transition-colors",
+                "w-full px-4 py-3 text-base bg-white border rounded-xl outline-none transition-colors",
                 errors.subject ? "border-red-300 focus:border-red-500" : "border-stone-200 focus:border-stone-400"
               )}
             />
@@ -140,7 +145,7 @@ export default function CreateEmail() {
               rows={8}
               placeholder="Gửi tôi của tương lai,"
               className={cn(
-                "w-full px-4 py-3 bg-white border rounded-xl outline-none transition-colors resize-none leading-relaxed",
+                "w-full px-4 py-3 text-base bg-white border rounded-xl outline-none transition-colors resize-none leading-relaxed",
                 errors.content ? "border-red-300 focus:border-red-500" : "border-stone-200 focus:border-stone-400"
               )}
             />
@@ -155,7 +160,7 @@ export default function CreateEmail() {
                 type="date"
                 min={new Date().toISOString().split('T')[0]}
                 className={cn(
-                  "w-full px-4 py-3 bg-white border rounded-xl outline-none transition-colors",
+                  "w-full px-4 py-3 text-base bg-white border rounded-xl outline-none transition-colors",
                   errors.date ? "border-red-300 focus:border-red-500" : "border-stone-200 focus:border-stone-400"
                 )}
               />
@@ -168,7 +173,7 @@ export default function CreateEmail() {
                 {...register('time')}
                 type="time"
                 className={cn(
-                  "w-full px-4 py-3 bg-white border rounded-xl outline-none transition-colors",
+                  "w-full px-4 py-3 text-base bg-white border rounded-xl outline-none transition-colors",
                   errors.time ? "border-red-300 focus:border-red-500" : "border-stone-200 focus:border-stone-400"
                 )}
               />
@@ -181,7 +186,7 @@ export default function CreateEmail() {
             <select
               {...register('timezone')}
               className={cn(
-                "w-full px-4 py-3 bg-white border rounded-xl outline-none transition-colors appearance-none",
+                "w-full px-4 py-3 text-base bg-white border rounded-xl outline-none transition-colors appearance-none",
                 errors.timezone ? "border-red-300 focus:border-red-500" : "border-stone-200 focus:border-stone-400"
               )}
             >
@@ -208,7 +213,10 @@ export default function CreateEmail() {
               className="w-full sm:w-2/3 flex items-center justify-center gap-2 px-6 py-4 bg-stone-900 hover:bg-stone-800 disabled:bg-stone-300 text-stone-50 rounded-xl font-medium transition-all active:scale-[0.98]"
             >
               {isSubmitting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
+                  <span>Đang gửi...</span>
+                </>
               ) : (
                 <>
                   Lên lịch gửi
@@ -232,7 +240,7 @@ export default function CreateEmail() {
           <div className="bg-white p-8 rounded-2xl shadow-sm space-y-6">
             <div>
               <p className="text-xs text-stone-400 uppercase tracking-widest font-medium mb-1">Gửi vào ngày</p>
-              <p className="font-serif text-xl text-stone-800">{getPreviewDate()}</p>
+              <p className="font-sans font-semibold text-xl text-stone-800">{getPreviewDate()}</p>
               <p className="text-stone-500 text-sm mt-1">
                 {watchAll.time || '00:00'} • {watchAll.timezone || 'UTC'}
               </p>

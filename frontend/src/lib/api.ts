@@ -61,3 +61,23 @@ export async function cancelEmail(id: string): Promise<ScheduledEmail> {
   }
   return res.json();
 }
+
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export async function sendAIChatMessage(messages: ChatMessage[]): Promise<string> {
+  const res = await fetch(`${API_BASE}/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData?.error?.message || 'Lỗi kết nối tới Trợ lý AI');
+  }
+  const data = await res.json();
+  return data.reply;
+}
+

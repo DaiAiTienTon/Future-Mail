@@ -1,3 +1,9 @@
+/**
+ * Future Mail — Open Source Project
+ * Released under the MIT License.
+ * Copyright (c) 2026 DaiAiTienTon
+ */
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';

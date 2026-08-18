@@ -1,3 +1,9 @@
+/**
+ * Future Mail — Open Source Project
+ * Released under the MIT License.
+ * Copyright (c) 2026 DaiAiTienTon
+ */
+
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Clock } from 'lucide-react';
 import { cn } from '../lib/utils';

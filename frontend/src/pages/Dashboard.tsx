@@ -1,3 +1,9 @@
+/**
+ * Future Mail — Open Source Project
+ * Released under the MIT License.
+ * Copyright (c) 2026 DaiAiTienTon
+ */
+
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';

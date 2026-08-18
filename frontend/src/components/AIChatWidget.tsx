@@ -1,3 +1,9 @@
+/**
+ * Future Mail — Open Source Project
+ * Released under the MIT License.
+ * Copyright (c) 2026 DaiAiTienTon
+ */
+
 import { useState, useRef, useEffect } from 'react';
 import { Sparkles, X, Send, Loader2, Bot, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';

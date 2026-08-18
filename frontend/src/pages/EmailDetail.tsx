@@ -1,3 +1,9 @@
+/**
+ * Future Mail — Open Source Project
+ * Released under the MIT License.
+ * Copyright (c) 2026 DaiAiTienTon
+ */
+
 import { useEffect, useState } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { fetchEmail, cancelEmail, type ScheduledEmail } from '../lib/api';

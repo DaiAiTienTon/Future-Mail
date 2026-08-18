@@ -198,3 +198,28 @@ Truy cập ứng dụng tại trình duyệt: `http://localhost:5173`
 
   [SCHEDULED] ──(Người dùng bấm Hủy)──> [CANCELLED]
 ```
+
+---
+
+## 🐛 Quản Lý Lỗi & Đóng Góp (Bug Tracker & Community)
+
+- **Hệ thống theo dõi và quản lý lỗi (Bug Tracker):** [GitHub Issues — Future Mail](https://github.com/DaiAiTienTon/Future-Mail/issues)
+- **Kho mã nguồn chính thức (Source Code Repository):** [GitHub — Future-Mail](https://github.com/DaiAiTienTon/Future-Mail)
+- **Lịch sử thay đổi (Changelog):** Xem chi tiết tại [CHANGELOG.md](file:///d:/Future-Mail/CHANGELOG.md)
+
+Mọi đóng góp, báo lỗi hoặc yêu cầu tính năng mới xin vui lòng tạo Issue trên hệ thống Bug Tracker của dự án.
+
+---
+
+## 📦 Bản Phát Hành (Releases)
+
+- **Phiên bản hiện tại:** `v1.0.0`
+- **Bản phát hành chính thức (Release Archive):** [Future-Mail v1.0.0 Release](https://github.com/DaiAiTienTon/Future-Mail/releases/tag/v1.0.0)
+
+---
+
+## 📄 Giấy Phép (License)
+
+Sản phẩm mã nguồn mở **Future Mail** được cấp phép theo giấy phép mở **[MIT License](file:///d:/Future-Mail/LICENSE)** (Được công nhận bởi OSI - Open Source Initiative). 
+
+Toàn văn giấy phép được đính kèm trong tệp `LICENSE` ở thư mục gốc của dự án.

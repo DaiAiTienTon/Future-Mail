@@ -1,3 +1,9 @@
+/**
+ * Future Mail — Open Source Project
+ * Released under the MIT License.
+ * Copyright (c) 2026 DaiAiTienTon
+ */
+
 import cron from 'node-cron';
 import { prisma } from './prisma';
 import { sendEmail } from './services/emailService';

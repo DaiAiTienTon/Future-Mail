@@ -6,7 +6,20 @@ Dự án tuân thủ theo chuẩn [Semantic Versioning](https://semver.org/lang/
 
 ---
 
+## [1.1.0] - 2026-08-19
+
+### ✨ Cải Tiến (Changed)
+- **Nâng Cấp HTML Email Template:**
+  - Email gửi đi được nâng cấp từ plain text lên **HTML email đẹp** với thiết kế hiện đại.
+  - Thêm **header** có branding "Future Mail" với nền gradient tối.
+  - Thêm **phần phụ lục (Time Capsule Details)** hiển thị số ngày email "du hành thời gian", ngày lên lịch gửi và ngày giao thực tế.
+  - Thêm **footer** với link về dự án.
+  - Giữ lại plain text fallback để tương thích với email client cũ.
+
+---
+
 ## [1.0.0] - 2026-08-18
+
 
 ### 🌟 Thêm Mới (Added)
 - **Hệ Thống Lên Lịch Gửi Thư Tương Lai (Persistent Scheduling):**

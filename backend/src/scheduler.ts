@@ -80,6 +80,8 @@ export async function processScheduledEmails(emailSender = sendEmail) {
         to: email.recipient,
         subject: email.subject,
         content: email.content,
+        scheduledAt: email.scheduledAt,
+        sentAt: new Date(),
       });
 
       // 3. Update the database based on the result

@@ -22,28 +22,27 @@ export interface SendEmailResult {
 }
 
 /**
- * Formats a Date object to a human-readable string.
- * Example: "August 18, 2026"
+ * Định dạng Date sang định dạng tiếng Việt rõ ràng, trang nhã.
+ * Ví dụ: "18 tháng 8, 2026"
  */
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+function formatDateVi(date: Date): string {
+  const d = new Date(date);
+  const day = d.getDate();
+  const month = d.getMonth() + 1;
+  const year = d.getFullYear();
+  return `${day} tháng ${month}, ${year}`;
 }
 
 /**
- * Calculates the number of days the email "travelled through time".
- * Returns the difference in whole days between scheduledAt and sentAt.
+ * Tính số ngày email "du hành thời gian".
  */
 function calcTravelDays(scheduledAt: Date, sentAt: Date): number {
   const msPerDay = 1000 * 60 * 60 * 24;
-  return Math.round(Math.abs(sentAt.getTime() - scheduledAt.getTime()) / msPerDay);
+  return Math.max(0, Math.round(Math.abs(sentAt.getTime() - scheduledAt.getTime()) / msPerDay));
 }
 
 /**
- * Converts plain text content (with newlines) to safe HTML paragraphs.
+ * Chuyển đổi nội dung văn bản thuần (có ngắt dòng) sang các đoạn thẻ HTML an toàn.
  */
 function textToHtml(text: string): string {
   return text
@@ -53,112 +52,82 @@ function textToHtml(text: string): string {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
-      return escaped.trim() === '' ? '<br>' : `<p style="margin:0 0 12px 0;">${escaped}</p>`;
+      return escaped.trim() === '' ? '<br style="margin-bottom:8px;" />' : `<p style="margin:0 0 14px 0;">${escaped}</p>`;
     })
     .join('');
 }
 
 /**
- * Builds a beautiful HTML email for Future Mail.
+ * Xây dựng mẫu HTML Email trang nhã, sáng sủa, đồng bộ tiếng Việt và chuẩn bố cục thẻ card như ảnh mẫu.
  */
 function buildEmailHtml(options: SendEmailOptions): string {
   const deliveredAt = options.sentAt ?? new Date();
   const travelDays = calcTravelDays(options.scheduledAt, deliveredAt);
-  const scheduledDateStr = formatDate(options.scheduledAt);
-  const deliveredDateStr = formatDate(deliveredAt);
+  const scheduledDateStr = formatDateVi(options.scheduledAt);
+  const deliveredDateStr = formatDateVi(deliveredAt);
   const contentHtml = textToHtml(options.content);
 
-  const travelText =
-    travelDays === 0
-      ? 'This email was delivered on the same day it was scheduled.'
-      : `This email was travelling through time for ${travelDays} day${travelDays !== 1 ? 's' : ''}.`;
-
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${options.subject}</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f5;padding:40px 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f9fafb;padding:32px 16px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+        <!-- Main Card Container -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;background-color:#ffffff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
 
           <!-- HEADER -->
           <tr>
-            <td style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:36px 48px;text-align:center;">
-              <div style="display:inline-flex;align-items:center;gap:10px;">
-                <span style="font-size:28px;">✉️</span>
-                <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Future Mail</span>
-              </div>
-              <p style="margin:10px 0 0 0;font-size:13px;color:#94a3b8;letter-spacing:0.5px;">Your time capsule has arrived</p>
-            </td>
-          </tr>
-
-          <!-- CONTENT -->
-          <tr>
-            <td style="padding:40px 48px 32px 48px;">
-              <div style="font-size:15px;line-height:1.75;color:#374151;">
-                ${contentHtml}
-              </div>
-            </td>
-          </tr>
-
-          <!-- DIVIDER -->
-          <tr>
-            <td style="padding:0 48px;">
-              <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;" />
-            </td>
-          </tr>
-
-          <!-- METADATA / APPENDIX -->
-          <tr>
-            <td style="padding:24px 48px 32px 48px;background-color:#f9fafb;border-bottom-left-radius:12px;border-bottom-right-radius:12px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <td align="center" style="padding:32px 32px 24px 32px;border-bottom:1px solid #f0f0f0;">
+              <table cellpadding="0" cellspacing="0" border="0" align="center">
                 <tr>
-                  <td style="padding-bottom:8px;">
-                    <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;">Time Capsule Details</span>
+                  <td align="center" style="vertical-align:middle;">
+                    <span style="font-size:24px;line-height:1;margin-right:8px;color:#ef4444;">✉️</span>
+                    <span style="font-size:22px;font-weight:700;color:#e11d48;letter-spacing:-0.3px;vertical-align:middle;">FutureMail</span>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding-bottom:6px;">
-                    <span style="font-size:14px;color:#6b7280;">⏳&nbsp; ${travelText}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding-bottom:6px;">
-                    <span style="font-size:14px;color:#6b7280;">📅&nbsp; Scheduled on ${scheduledDateStr}.</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span style="font-size:14px;color:#6b7280;">📬&nbsp; Delivered on ${deliveredDateStr}.</span>
+                  <td align="center" style="padding-top:8px;">
+                    <p style="margin:0;font-size:14px;color:#6b7280;line-height:1.4;">Lá thư vượt thời gian từ ngày ${scheduledDateStr} của bạn đã đến nơi</p>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- DIVIDER -->
+          <!-- EMAIL CONTENT -->
           <tr>
-            <td style="padding:0 48px;">
-              <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;" />
+            <td style="padding:36px 32px;font-size:15px;line-height:1.75;color:#1f2937;min-height:100px;">
+              ${contentHtml}
             </td>
           </tr>
 
-          <!-- FOOTER -->
+          <!-- METADATA / PHỤ LỤC -->
           <tr>
-            <td style="padding:20px 48px;text-align:center;">
-              <p style="margin:0;font-size:12px;color:#9ca3af;">
-                Sent by <a href="https://github.com/DaiAiTienTon/Future-Mail" style="color:#6366f1;text-decoration:none;font-weight:600;">Future Mail</a>
-              </p>
+            <td style="padding:24px 32px;background-color:#ffffff;border-top:1px solid #f0f0f0;color:#4b5563;font-size:14px;line-height:1.7;">
+              <p style="margin:0 0 4px 0;">Lá thư này đã du hành thời gian qua ${travelDays} ngày.</p>
+              <p style="margin:0 0 4px 0;">Đã lên lịch vào ngày ${scheduledDateStr}.</p>
+              <p style="margin:0;">Được gửi đến vào ngày ${deliveredDateStr}.</p>
             </td>
           </tr>
 
         </table>
+
+        <!-- FOOTER -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;margin-top:18px;">
+          <tr>
+            <td align="center" style="font-size:13px;color:#9ca3af;padding:4px;">
+              Gửi bởi <a href="https://github.com/DaiAiTienTon/Future-Mail" style="color:#e11d48;text-decoration:none;font-weight:600;">Future Mail</a>
+            </td>
+          </tr>
+        </table>
+
       </td>
     </tr>
   </table>
@@ -168,10 +137,10 @@ function buildEmailHtml(options: SendEmailOptions): string {
 }
 
 /**
- * Sends an email using the configured email service (Nodemailer SMTP or Resend API).
+ * Gửi email qua dịch vụ đã cấu hình (Nodemailer SMTP hoặc Resend API).
  *
- * @param options - The email details (to, subject, content, scheduledAt, sentAt)
- * @returns A promise that resolves to a SendEmailResult
+ * @param options - Thông tin email (to, subject, content, scheduledAt, sentAt)
+ * @returns Promise chứa SendEmailResult
  */
 export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
   const { to, subject, content } = options;
@@ -185,7 +154,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
 
   const html = buildEmailHtml(options);
 
-  // 1. Use Nodemailer SMTP if SMTP_USER and SMTP_PASS are configured
+  // 1. Dùng Nodemailer SMTP nếu có SMTP_USER và SMTP_PASS
   if (smtpUser && smtpPass) {
     try {
       const transporter = nodemailer.createTransport({
@@ -213,12 +182,12 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
     } catch (err: any) {
       return {
         success: false,
-        error: err.message || 'Error sending email via SMTP',
+        error: err.message || 'Lỗi khi gửi email qua SMTP',
       };
     }
   }
 
-  // 2. Fallback to Resend API if configured
+  // 2. Fallback sang Resend API nếu có cấu hình
   if (apiKey && emailFrom) {
     const resend = new Resend(apiKey);
 
@@ -234,7 +203,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       if (error) {
         return {
           success: false,
-          error: error.message || 'Unknown error from Resend API',
+          error: error.message || 'Lỗi từ Resend API',
         };
       }
 
@@ -245,13 +214,13 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
     } catch (err: any) {
       return {
         success: false,
-        error: err.message || 'Unexpected error while sending email via Resend',
+        error: err.message || 'Lỗi không mong muốn khi gửi qua Resend API',
       };
     }
   }
 
   return {
     success: false,
-    error: 'Email service is not configured (missing SMTP_USER/SMTP_PASS or RESEND_API_KEY)',
+    error: 'Dịch vụ email chưa được cấu hình (thiếu SMTP_USER/SMTP_PASS hoặc RESEND_API_KEY)',
   };
 }

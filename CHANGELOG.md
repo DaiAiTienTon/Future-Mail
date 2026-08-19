@@ -6,14 +6,22 @@ Dự án tuân thủ theo chuẩn [Semantic Versioning](https://semver.org/lang/
 
 ---
 
+## [1.1.1] - 2026-08-19
+
+### ✨ Cải Tiến (Changed)
+- **Tối Ưu Giao Diện Email & Bản Địa Hóa Tiếng Việt:**
+  - Chuyển đổi giao diện sang nền sáng (Clean Light Theme) dạng thẻ Card thanh lịch, chuẩn kích thước và căn chỉnh cân đối theo ảnh mẫu.
+  - Chuyển đổi 100% nội dung tiêu đề, ngày tháng, thông điệp phụ lục và chân trang sang Tiếng Việt chuẩn.
+  - Tối ưu căn lề, đường kẻ phân cách mảnh và biểu tượng thương hiệu Future Mail.
+
+---
+
 ## [1.1.0] - 2026-08-19
 
 ### ✨ Cải Tiến (Changed)
 - **Nâng Cấp HTML Email Template:**
-  - Email gửi đi được nâng cấp từ plain text lên **HTML email đẹp** với thiết kế hiện đại.
-  - Thêm **header** có branding "Future Mail" với nền gradient tối.
-  - Thêm **phần phụ lục (Time Capsule Details)** hiển thị số ngày email "du hành thời gian", ngày lên lịch gửi và ngày giao thực tế.
-  - Thêm **footer** với link về dự án.
+  - Email gửi đi được nâng cấp từ plain text lên **HTML email** hỗ trợ phụ lục thời gian gửi.
+  - Thêm phần phụ lục hiển thị số ngày email du hành thời gian, ngày lên lịch gửi và ngày giao thực tế.
   - Giữ lại plain text fallback để tương thích với email client cũ.
 
 ---

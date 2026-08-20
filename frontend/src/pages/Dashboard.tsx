@@ -16,20 +16,37 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadEmails = () => {
-    setLoading(true);
-    setError(null);
+  const loadEmails = (isInitial = false) => {
+    if (isInitial) {
+      setLoading(true);
+      setError(null);
+    }
     fetchEmails()
       .then((data) => {
         setEmails(data);
         setError(null);
       })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (isInitial) {
+          setError(err.message);
+        }
+      })
+      .finally(() => {
+        if (isInitial) {
+          setLoading(false);
+        }
+      });
   };
 
   useEffect(() => {
-    loadEmails();
+    loadEmails(true);
+
+    // Tự động kiểm tra và cập nhật dữ liệu ngầm mỗi 5 giây
+    const interval = setInterval(() => {
+      loadEmails(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -50,7 +67,7 @@ export default function Dashboard() {
         <h3 className="font-medium text-lg">Không thể tải dòng thời gian</h3>
         <p className="text-red-700 max-w-sm text-sm">{error}</p>
         <button 
-          onClick={loadEmails}
+          onClick={() => loadEmails(true)}
           className="mt-4 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-900 rounded-full transition-colors text-sm font-medium"
         >
           Thử lại

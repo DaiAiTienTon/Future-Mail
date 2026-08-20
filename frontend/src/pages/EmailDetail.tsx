@@ -27,13 +27,53 @@ export default function EmailDetail() {
 
   useEffect(() => {
     if (!id) return;
-    fetchEmail(id)
-      .then(data => {
-        setEmail(data);
+
+    let isMounted = true;
+
+    const loadDetail = (isInitial = false) => {
+      if (isInitial) {
+        setLoading(true);
         setError(null);
-      })
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
+      }
+      fetchEmail(id)
+        .then(data => {
+          if (!isMounted) return;
+          setEmail(data);
+          setError(null);
+        })
+        .catch(err => {
+          if (!isMounted) return;
+          if (isInitial) {
+            setError(err.message);
+          }
+        })
+        .finally(() => {
+          if (isMounted && isInitial) {
+            setLoading(false);
+          }
+        });
+    };
+
+    loadDetail(true);
+
+    // Tự động kiểm tra và cập nhật dữ liệu ngầm mỗi 3 giây nếu thư đang chờ gửi
+    const interval = setInterval(() => {
+      setEmail((current) => {
+        if (current && (current.status === 'SCHEDULED' || current.status === 'SENDING')) {
+          fetchEmail(id)
+            .then(data => {
+              if (isMounted) setEmail(data);
+            })
+            .catch(() => {});
+        }
+        return current;
+      });
+    }, 3000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [id]);
 
   const handleCancel = async () => {

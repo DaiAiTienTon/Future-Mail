@@ -6,6 +6,16 @@ Dự án tuân thủ theo chuẩn [Semantic Versioning](https://semver.org/lang/
 
 ---
 
+## [1.1.2] - 2026-08-20
+
+### ✨ Cải Tiến (Changed)
+- **Tự Động Cập Nhật Dữ Liệu Thời Gian Thực ở Frontend:**
+  - Tự động cập nhật ngầm danh sách thư và thống kê trên **Dashboard** mỗi 5 giây mà không cần reload trang.
+  - Tự động thăm dò và đồng bộ trạng thái gửi thư (`SCHEDULED` → `SENT`) trên trang **Email Detail** ngay khi backend hoàn tất xử lý.
+  - Tối ưu không gây gián đoạn hay nhấp nháy giao diện khi cập nhật dữ liệu nền.
+
+---
+
 ## [1.1.1] - 2026-08-19
 
 ### ✨ Cải Tiến (Changed)
